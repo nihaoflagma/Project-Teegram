@@ -17,19 +17,19 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(Main.class, args);
 
-        // Генерация кода
+        
         OtpCodeGenerator generator = context.getBean(OtpCodeGenerator.class);
         String code = generator.generateCode();
 
-        // Отправка по Email
+        
         EmailNotificationService emailService = context.getBean(EmailNotificationService.class);
         emailService.sendCode("vladvladgg2000@mail.ru", code);
 
-        // Отправка в Telegram
+        
         TelegramNotificationService telegramService = context.getBean(TelegramNotificationService.class);
         telegramService.sendCode("871237277", code);
 
-        // Сохранение в базу
+        
         OtpCodeRepository repository = context.getBean(OtpCodeRepository.class);
         OtpCode otpCode = OtpCode.builder()
                 .email("vladvladgg2000@mail.ru")
@@ -42,7 +42,7 @@ public class Main {
 
         repository.save(otpCode);
 
-        // Сохранение в файл (добавляем это!)
+        
         com.example.otp.service.OtpFileService otpFileService = context.getBean(com.example.otp.service.OtpFileService.class);
         otpFileService.saveOtpToFile("vladvladgg2000@mail.ru", code);
 
