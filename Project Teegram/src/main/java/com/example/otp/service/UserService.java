@@ -19,20 +19,20 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Метод регистрации нового пользователя
+    
     public String registerUser(String email, String password, String roleName) {
-        // Проверка — есть ли уже пользователь с таким email
+        
         if (userRepository.findByEmail(email).isPresent()) {
             return "Пользователь с таким email уже существует.";
         }
 
-        // Поиск роли
+        
         Role role = roleRepository.findByName(roleName);
         if (role == null) {
             return "Роль " + roleName + " не найдена.";
         }
 
-        // Создание пользователя
+        
         User user = new User();
         user.setUsername(email);   // 👈 исправил здесь
         user.setPassword(passwordEncoder.encode(password));
