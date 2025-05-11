@@ -9,7 +9,7 @@ public class OtpCodeGenerator {
 
     public String generateCode() {
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // Генерация 6-значного кода
+        int otp = 100000 + random.nextInt(900000); 
         return String.valueOf(otp);
     }
 }
