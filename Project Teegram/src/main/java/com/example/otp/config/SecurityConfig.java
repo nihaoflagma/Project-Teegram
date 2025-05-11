@@ -20,17 +20,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Отключаем CSRF для REST API
+                .csrf(csrf -> csrf.disable()) 
                 .authorizeRequests(auth -> auth
-                        // Администраторам разрешаем доступ к отправке OTP
+                        
                         .requestMatchers("/api/otp/send").hasRole("ADMIN")
-                        // Верификация OTP доступна для всех аутентифицированных пользователей
+                        
                         .requestMatchers("/api/otp/verify").hasRole("USER")
-                        // Прочие запросы должны быть аутентифицированными
+                        
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Страница логина, если необходимо
+                        .loginPage("/login") 
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
