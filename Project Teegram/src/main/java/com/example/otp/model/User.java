@@ -17,11 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;     // 👈 Добавлено поле для почты
+    private String email;     
 
-    private String username;  // Логин
+    private String username;  
 
-    private String password;  // Пароль
+    private String password;  
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -29,5 +29,5 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;  // Список ролей
+    private Set<Role> roles;  
 }
