@@ -9,12 +9,12 @@ import java.util.Optional;
 @Repository
 public interface OtpCodeRepository extends JpaRepository<OtpCode, Long> {
 
-    // Найти последний код подтверждения по email
+    
     Optional<OtpCode> findTopByEmailOrderByCreatedAtDesc(String email);
 
-    // Найти последний код подтверждения по Telegram ID
+    
     Optional<OtpCode> findTopByTelegramIdOrderByCreatedAtDesc(String telegramId);
 
-    // Новый метод: найти код по email, code и только если он не использован
+    
     Optional<OtpCode> findByEmailAndCodeAndUsedFalse(String email, String code);
 }
