@@ -16,7 +16,7 @@ public class SmppNotificationService {
         log.info("Фейковая отправка OTP кода [{}] на номер [{}] через эмулятор SMPP", code, phoneNumber);
 
         try {
-            // Небольшая имитация задержки отправки
+            
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
