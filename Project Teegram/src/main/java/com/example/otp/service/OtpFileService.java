@@ -19,7 +19,7 @@ public class OtpFileService {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String record = String.format("Email: %s | Code: %s | Created At: %s%n", email, code, timestamp);
 
-        log.info("Попытка сохранить OTP в файл: {}", FILE_NAME); // добавляем лог до открытия файла
+        log.info("Попытка сохранить OTP в файл: {}", FILE_NAME); 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
             writer.write(record);
