@@ -22,7 +22,7 @@ public class OtpController {
     private final TelegramNotificationService telegramNotificationService;
     private final SmppNotificationService smppNotificationService;
     private final OtpCodeService otpService;
-    private final OtpFileService otpFileService; // ➔ добавили сервис для записи в файл
+    private final OtpFileService otpFileService; 
 
     @PostMapping("/send")
     public ResponseEntity<String> sendOtp(@RequestParam String email,
@@ -32,7 +32,7 @@ public class OtpController {
         log.info("Получен запрос на отправку OTP. Email: {}, TelegramId: {}, Phone: {}, Channel: {}", email, telegramId, phoneNumber, channel);
 
         String otp = otpService.generateOtp();
-        otpFileService.saveOtpToFile(email, otp); // ➔ сохраняем в файл каждый сгенерированный код
+        otpFileService.saveOtpToFile(email, otp); 
 
         switch (channel.toLowerCase()) {
             case "email" -> {
