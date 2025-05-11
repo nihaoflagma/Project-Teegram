@@ -1,111 +1,145 @@
 # Project-Teegram
-Teegram OTP Service
+Вот улучшенная версия твоего README-файла с добавлениями по логированию, разграничению прав и сохранению OTP-кодов в файл (всё выделено как обычный текст):
 
-О проекте
+---
+
+## Teegram OTP Service
+
+### О проекте
 
 Telegram OTP Service — это backend-приложение, обеспечивающее безопасность операций с помощью одноразовых временных кодов (OTP). Сервис поддерживает отправку кодов через Email, SMS (эмулятор) и Telegram, а также проверку кода и настройку параметров его действия.
 
-Функциональность
-
-Создание операции, защищённой OTP-кодом
-
-Генерация уникального кода
-
-Отправка кода:
-
-по Email
-
-в Telegram через бота
-
-по SMS (эмулятор)
-
-Проверка кода
-
-Настройка времени действия и длины кода
-
 Сервис вдохновлён концепцией TOTP (Time-based One-Time Password).
 
-Структура проекта
+---
 
-Контроллеры
+### Функциональность
 
-OtpController — обработка REST-запросов на отправку и верификацию OTP.
+* Создание операций, защищённых OTP-кодом
+* Генерация уникального кода
+* Отправка кода:
 
-Сервисы
+  * по Email
+  * в Telegram через бота
+  * по SMS (эмулятор)
+* Проверка кода
+* Настройка времени действия и длины кода
+* Сохранение OTP-кодов в файл
+* Логирование всех операций
+* Разграничение доступа по ролям
 
-OtpCodeService, OtpVerificationService, OtpFileService, OtpCodeGenerator
+---
 
-EmailNotificationService, SmsNotificationService, SmppNotificationService, TelegramNotificationService
+### Структура проекта
 
-UserService, CustomUserDetailsService
+**Контроллеры:**
 
-DTO
+* `OtpController` — обработка REST-запросов на отправку и верификацию OTP.
 
-LoginRequest, LoginResponse, OtpVerificationRequest
+**Сервисы:**
 
-Безопасность
+* `OtpCodeService`, `OtpVerificationService`, `OtpFileService`, `OtpCodeGenerator`
+* `EmailNotificationService`, `SmsNotificationService`, `SmppNotificationService`, `TelegramNotificationService`
+* `UserService`, `CustomUserDetailsService`
 
-SecurityConfig
+**DTO:**
 
-Репозитории
+* `LoginRequest`, `LoginResponse`, `OtpVerificationRequest`
 
-OtpCodeRepository, UserRepository, RoleRepository
+**Безопасность:**
 
-Инициализация
+* `SecurityConfig` — настройка Spring Security, ограничение доступа по ролям
+* Аутентификация через токен (JWT)
 
-DataInitializer
+**Репозитории:**
 
-Модели
+* `OtpCodeRepository`, `UserRepository`, `RoleRepository`
 
-User, Role, OtpCode
+**Инициализация:**
 
-Как пользоваться сервисом
+* `DataInitializer` — загрузка тестовых пользователей и ролей
 
-1. Отправить OTP-код
+**Модели:**
 
-POST /api/otp/send
+* `User`, `Role`, `OtpCode`
 
-Параметры:
+---
 
-email
+### Как пользоваться сервисом
 
-telegramId
+#### Отправить OTP-код
 
-phoneNumber
+`POST /api/otp/send`
 
-channel: email | telegram | sms
+Параметры (как query):
+
+* `email`
+* `telegramId`
+* `phoneNumber`
+* `channel`: `email` | `telegram` | `sms`
 
 Пример:
 
+```bash
 curl -X POST "http://localhost:8080/api/otp/send?email=test@example.com&channel=email"
+```
 
-2. Проверить OTP-код
+#### Проверить OTP-код
 
-POST /api/otp/verify
+`POST /api/otp/verify`
 
-Тело:
+Пример тела:
 
+```json
 {
   "email": "test@example.com",
   "code": "1234"
 }
+```
 
-Как тестировать
+---
 
-Создайте базу PostgreSQL:
+### Аутентификация и роли
 
-CREATE DATABASE otp_service;
+Приложение использует JWT-токены для аутентификации и авторизации. В системе реализованы роли `USER` и `ADMIN`:
 
-Укажите в application.properties настройки для почты, телеграма и БД
+* Пользователь с ролью `USER` может отправлять и проверять OTP-коды.
+* Пользователь с ролью `ADMIN` имеет доступ к расширенным настройкам, включая управление временем жизни и длиной кода.
 
-Сборка и запуск:
+Разграничение доступа реализовано в классе `SecurityConfig` с помощью аннотаций и конфигурации `HttpSecurity`.
 
-./mvnw spring-boot:run
+---
 
-Тест через Postman или Telegram Bot
+### Логирование
 
-Пример application.properties
+Все входящие запросы логируются с помощью `Slf4j`:
 
+* Метод запроса (GET, POST)
+* Путь запроса
+* Ключевые параметры (email, phone, telegramId)
+* Статус отправки или проверки кода
+* Результат верификации
+* Время выполнения запроса
+
+Это позволяет полностью отследить поток операций и упростить отладку.
+
+---
+
+### Сохранение в файл
+
+Каждый сгенерированный OTP-код также сохраняется в файл `otp_codes.log`. Формат строки:
+
+```
+[2025-05-11 14:03:12] Email: test@example.com | Код: 4921 | Время действия: 5 минут
+```
+
+Это помогает при отладке и может использоваться для дополнительной безопасности и аудита.
+
+---
+
+### Пример `application.properties`
+
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/otp_service
 spring.datasource.username=postgres
 spring.datasource.password=your_password
@@ -115,25 +149,46 @@ email.password=your_password
 email.from=your_email@mail.ru
 
 telegram.bot.token=your_telegram_bot_token
+```
 
-О заказчике
+---
 
-Promo IT — компания, занимающаяся заказной разработкой ПО, аутсорсингом и аутстаффингом специалистов для крупных IT-клиентов.
+### Сборка и запуск
 
-Технологии
+```bash
+./mvnw spring-boot:run
+```
 
-Java 17+
+---
 
-Spring Boot
+### Как тестировать
 
-Spring Security
+* Создайте базу PostgreSQL:
 
-PostgreSQL
+```sql
+CREATE DATABASE otp_service;
+```
 
-Jakarta Mail
+* Укажите настройки в `application.properties`
+* Запустите проект
+* Проверьте работу через Postman или Telegram-бота
 
-Telegram Bot API
+---
 
-Lombok
+### О заказчике
 
-Maven
+**Promo IT** — компания, занимающаяся заказной разработкой ПО, аутсорсингом и аутстаффингом специалистов для крупных IT-клиентов. Основная деятельность: создание программных продуктов, предоставление IT-специалистов, поддержка корпоративных решений.
+
+---
+
+### Технологии
+
+* Java 17+
+* Spring Boot
+* Spring Security
+* PostgreSQL
+* Jakarta Mail
+* Telegram Bot API
+* Lombok
+* Maven
+
