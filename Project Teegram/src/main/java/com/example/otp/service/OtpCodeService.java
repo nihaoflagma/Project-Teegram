@@ -14,25 +14,25 @@ public class OtpCodeService {
 
     private final OtpCodeRepository otpCodeRepository;
 
-    // Генерация случайного OTP-кода
+    
     public String generateOtp() {
-        int otp = (int) (Math.random() * 9000) + 1000; // 4-значный код (от 1000 до 9999)
+        int otp = (int) (Math.random() * 9000) + 1000; 
         return String.valueOf(otp);
     }
 
-    // Сохранение OTP-кода в базу данных
+    
     public void saveOtp(String email, String otpCode) {
         OtpCode otp = new OtpCode();
         otp.setEmail(email);
         otp.setCode(otpCode);
         otp.setCreatedAt(LocalDateTime.now());
-        otp.setExpiresAt(LocalDateTime.now().plusMinutes(5)); // Код действителен 5 минут
+        otp.setExpiresAt(LocalDateTime.now().plusMinutes(5)); 
         otp.setUsed(false);
 
         otpCodeRepository.save(otp);
     }
 
-    // Проверка правильности кода
+    
     public boolean verifyOtp(String email, String code) {
         Optional<OtpCode> otpOptional = otpCodeRepository.findByEmailAndCodeAndUsedFalse(email, code);
 
@@ -42,12 +42,12 @@ public class OtpCodeService {
 
         OtpCode otp = otpOptional.get();
 
-        // Проверяем, не истек ли срок действия кода
+        
         if (otp.getExpiresAt().isBefore(LocalDateTime.now())) {
             return false;
         }
 
-        // Отмечаем код как использованный
+        
         otp.setUsed(true);
         otpCodeRepository.save(otp);
 
